@@ -1,4 +1,4 @@
-const AcessKey = process.env.AcessKey;
+const AcessKey = process.env.REACT_APP_ACCESS_KEY;
 const URL = `https://api.unsplash.com/photos/`;
 
 const fetchImages = async (page) => {
