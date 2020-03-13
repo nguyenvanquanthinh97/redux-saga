@@ -1,3 +1,4 @@
+require('dotenv').config();
 import React, { Component, Fragment } from 'react';
 import { Provider } from 'react-redux';
 
