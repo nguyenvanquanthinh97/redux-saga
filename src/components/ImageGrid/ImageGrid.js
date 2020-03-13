@@ -1,28 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
+import * as actions from '../../actions';
 import './styles.css';
-
-const key = '5f96323678d05ff0c4eb264ef184556868e303b32a2db88ecbf15746e6f25e02';
+import Spinner from '../Spinner/Spinner';
 
 class ImageGrid extends Component {
-    state = {
-        images: [],
-    };
-
     componentDidMount() {
-        fetch(`https://api.unsplash.com/photos/?client_id=${key}&per_page=28`)
-            .then(res => res.json())
-            .then(images => {
-                this.setState({
-                    images,
-                });
-            });
+        this.props.loadImages();
     }
 
     render() {
-        const { images } = this.state;
+        const { images, error, isLoading } = this.props;
         return (
             <div className="content">
+                {isLoading && <Spinner />}
                 <section className="grid">
                     {images.map(image => (
                         <div
@@ -38,9 +31,28 @@ class ImageGrid extends Component {
                         </div>
                     ))}
                 </section>
+                {error && <h1>{error}</h1>}
+                <a onClick={this.props.loadImages}>Click me to fetch Saga</a>
             </div>
         );
     }
 }
 
-export default ImageGrid;
+ImageGrid.propTypes = {
+    isLoading: PropTypes.bool,
+    images: PropTypes.array,
+    error: PropTypes.string,
+    loadImages: PropTypes.func
+};
+
+const mapStateToProps = state => ({
+    isLoading: state.images.loading,
+    images: state.images.images,
+    error: state.images.error
+});
+
+const mapDispatchToProps = dispatch => ({
+    loadImages: () => dispatch(actions.loadImages())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImageGrid);
